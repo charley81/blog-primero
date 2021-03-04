@@ -2,6 +2,7 @@ import * as React from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 import Layout from '../components/layout'
 import { css } from '@emotion/react'
+import Articles from '../components/articles'
 
 const IndexPage = () => {
   const data = useStaticQuery(query)
@@ -18,6 +19,7 @@ const IndexPage = () => {
         `}
       >
         <h1>{data.strapiHomepage.hero.title}</h1>
+        <Articles articles={data.allStrapiArticle.edges} />
       </div>
     </Layout>
   )
@@ -26,7 +28,7 @@ const IndexPage = () => {
 export default IndexPage
 
 const query = graphql`
-  query MyQuery {
+  {
     strapiHomepage {
       hero {
         title
@@ -36,6 +38,35 @@ const query = graphql`
         metaDescription
         shareImage {
           publicURL
+        }
+      }
+    }
+    allStrapiArticle(filter: { status: { eq: "published" } }) {
+      edges {
+        node {
+          strapiId
+          slug
+          title
+          category {
+            name
+          }
+          image {
+            childImageSharp {
+              fixed(width: 800, height: 500) {
+                src
+              }
+            }
+          }
+          author {
+            name
+            picture {
+              childImageSharp {
+                fixed(height: 30, width: 30) {
+                  src
+                }
+              }
+            }
+          }
         }
       }
     }
