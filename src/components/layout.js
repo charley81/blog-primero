@@ -1,41 +1,43 @@
-/**
- * Layout component that queries for data
- * with Gatsby's useStaticQuery component
- *
- * See: https://www.gatsbyjs.com/docs/use-static-query/
- */
-
-import * as React from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useStaticQuery, graphql } from 'gatsby'
+import { StaticQuery, graphql } from 'gatsby'
+import Seo from './seo'
 import { Global, css } from '@emotion/react'
-import styled from '@emotion/styled'
 import globalStyles from '../styles/global-styles'
+import Nav from '../components/nav'
+import styled from '@emotion/styled'
 
-const Layout = ({ children }) => {
-  const data = useStaticQuery(graphql`
-    query SiteTitleQuery {
-      site {
-        siteMetadata {
-          title
+const Wrap = styled.div`
+  padding: 1rem;
+  max-width: var(--maxWidth);
+  margin: auto;
+`
+
+const Layout = ({ children, seo }) => (
+  <StaticQuery
+    query={graphql`
+      query {
+        strapiHomepage {
+          seo {
+            metaTitle
+            metaDescription
+            shareImage {
+              publicURL
+            }
+          }
         }
       }
-    }
-  `)
-
-  return (
-    <>
-      <Global styles={globalStyles} />
-      <header></header>
-      <main>{children}</main>
-      <footer>
-        © {new Date().getFullYear()}, Built by
-        {` `}
-        <a href="https://thegreatdevco.com">The Great Dev Co.</a>
-      </footer>
-    </>
-  )
-}
+    `}
+    render={data => (
+      <Wrap>
+        <Global styles={globalStyles} />
+        <Seo seo={seo} />
+        <Nav />
+        <main>{children}</main>
+      </Wrap>
+    )}
+  />
+)
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,

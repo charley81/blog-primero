@@ -8,6 +8,8 @@ const globalStyles = css`
     --primaryColor: #cc2936;
     --borderRadius: 3px;
     --transition: all 0.3s linear;
+    --fontFamily: 'Heebo', sans-serif;
+    --maxWidth: 800px;
   }
   * {
     box-sizing: border-box;
@@ -15,7 +17,7 @@ const globalStyles = css`
     padding: 0;
   }
   body {
-    font-family: 'Inconsolata', monospace;
+    font-family: var(--fontFamily);
     background: var(--lightColor);
     color: var(--medColor);
     font-size: 16px;
@@ -38,52 +40,6 @@ const globalStyles = css`
   a {
     text-decoration: none;
     color: var(--darkColor);
-  }
-  .center {
-    text-align: center;
-  }
-  button {
-    background: var(--primaryColor);
-    color: var(--lightColor);
-    border: 0;
-    padding: 0.5rem 1rem;
-    border-radius: var(--borderRadius);
-    cursor: pointer;
-    transition: var(--transition);
-  }
-  h1 {
-    font-size: 3rem !important;
-  }
-
-  #category {
-    font-weight: 500 !important;
-  }
-
-  #title {
-    letter-spacing: 0.4px !important;
-    font-size: 22px !important;
-    font-size: 1.375rem !important;
-    line-height: 1.13636 !important;
-  }
-
-  #banner {
-    margin: 20px !important;
-    height: 800px !important;
-  }
-
-  #editor {
-    font-size: 16px !important;
-    font-size: 1rem !important;
-    line-height: 1.75 !important;
-  }
-
-  .uk-navbar-container {
-    background: #fff !important;
-  }
-
-  img:hover {
-    opacity: 1 !important;
-    transition: opacity 0.25s cubic-bezier(0.39, 0.575, 0.565, 1) !important;
   }
 `
 

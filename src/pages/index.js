@@ -1,16 +1,23 @@
 import * as React from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 import Layout from '../components/layout'
+import { css } from '@emotion/react'
 
 const IndexPage = () => {
   const data = useStaticQuery(query)
 
   return (
     <Layout seo={data.strapiHomepage.seo}>
-      <div className="uk-section">
-        <div className="uk-container uk-container-large">
-          <h1>{data.strapiHomepage.hero.title}</h1>
-        </div>
+      <div
+        css={css`
+          margin-top: 5vh;
+
+          h1 {
+            font-size: 4rem;
+          }
+        `}
+      >
+        <h1>{data.strapiHomepage.hero.title}</h1>
       </div>
     </Layout>
   )
