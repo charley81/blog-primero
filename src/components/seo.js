@@ -5,70 +5,92 @@
  * See: https://www.gatsbyjs.com/docs/use-static-query/
  */
 
-import * as React from "react"
-import PropTypes from "prop-types"
-import { Helmet } from "react-helmet"
-import { useStaticQuery, graphql } from "gatsby"
+import * as React from 'react'
+import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
+import { useStaticQuery, graphql } from 'gatsby'
 
-function SEO({ description, lang, meta, title }) {
-  const { site } = useStaticQuery(
-    graphql`
-      query {
-        site {
-          siteMetadata {
-            title
-            description
-            author
-          }
+function SEO({ seo = {} }) {
+  const { strapiGlobal } = useStaticQuery(query)
+  const { defaultSeo, siteName, favicon } = strapiGlobal
+
+  // merge default and page-specific seo values
+  const fullSeo = { ...defaultSeo, ...seo }
+
+  const getMetaTags = () => {
+    const tags = []
+
+    if (fullSeo.metaTitle) {
+      tags.push(
+        {
+          property: 'og:title',
+          content: fullSeo.metaTitle,
+        },
+        {
+          name: 'twitter:title',
+          content: fullSeo.metaTitle,
         }
-      }
-    `
-  )
+      )
+    }
+    if (fullSeo.metaDescription) {
+      tags.push(
+        {
+          name: 'description',
+          content: fullSeo.metaDescription,
+        },
+        {
+          property: 'og:description',
+          content: fullSeo.metaDescription,
+        },
+        {
+          name: 'twitter:description',
+          content: fullSeo.metaDescription,
+        }
+      )
+    }
+    if (fullSeo.shareImage) {
+      const imageUrl =
+        (process.env.GATSBY_ROOT_URL || 'http://localhost:8000') +
+        fullSeo.shareImage.publicURL
+      tags.push(
+        {
+          name: 'image',
+          content: imageUrl,
+        },
+        {
+          property: 'og:image',
+          content: imageUrl,
+        },
+        {
+          name: 'twitter:image',
+          content: imageUrl,
+        }
+      )
+    }
+    if (fullSeo.article) {
+      tags.push({
+        property: 'og:type',
+        content: 'article',
+      })
+    }
+    tags.push({ name: 'twitter:card', content: 'summary_large_image' })
 
-  const metaDescription = description || site.siteMetadata.description
-  const defaultTitle = site.siteMetadata?.title
+    return tags
+  }
+
+  const metaTags = getMetaTags()
 
   return (
     <Helmet
-      htmlAttributes={{
-        lang,
-      }}
-      title={title}
-      titleTemplate={defaultTitle ? `%s | ${defaultTitle}` : null}
-      meta={[
+      title={fullSeo.metaTitle}
+      titleTemplate={`%s | ${siteName}`}
+      meta={metaTags}
+      link={[
         {
-          name: `description`,
-          content: metaDescription,
+          rel: 'icon',
+          href: favicon.publicURL,
         },
-        {
-          property: `og:title`,
-          content: title,
-        },
-        {
-          property: `og:description`,
-          content: metaDescription,
-        },
-        {
-          property: `og:type`,
-          content: `website`,
-        },
-        {
-          name: `twitter:card`,
-          content: `summary`,
-        },
-        {
-          name: `twitter:creator`,
-          content: site.siteMetadata?.author || ``,
-        },
-        {
-          name: `twitter:title`,
-          content: title,
-        },
-        {
-          name: `twitter:description`,
-          content: metaDescription,
-        },
-      ].concat(meta)}
+      ]}
     />
   )
 }
@@ -76,7 +98,9 @@ function SEO({ description, lang, meta, title }) {
 SEO.defaultProps = {
   lang: `en`,
   meta: [],
-  description: ``,
+  description: null,
+  image: null,
+  article: false,
 }
 
 SEO.propTypes = {
@@ -87,3 +111,21 @@ SEO.propTypes = {
 }
 
 export default SEO
+
+const query = graphql`
+  query {
+    strapiGlobal {
+      siteName
+      favicon {
+        publicURL
+      }
+      defaultSeo {
+        metaTitle
+        metaDescription
+        shareImage {
+          publicURL
+        }
+      }
+    }
+  }
+`
